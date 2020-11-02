@@ -52,7 +52,7 @@ class RecyclerViewAdapter(val mContext: Context, val mdata: ArrayList<Book>) :
         holder.tvAuthor.setText(book.authors)
         holder.tvPrice.setText(book.price)
         holder.tvCategory.setText(book.categories)
-        Picasso.get().load(book.thumbnail).into(holder.ivThumbnail)
+        Picasso.get().load(book.thumbnail).error(R.drawable.ic_thumbnail).into(holder.ivThumbnail)
     }
 
     override fun getItemCount(): Int {
@@ -65,6 +65,6 @@ class RecyclerViewAdapter(val mContext: Context, val mdata: ArrayList<Book>) :
         var tvCategory: TextView = itemView.findViewById(R.id.category)
         var tvPrice: TextView = itemView.findViewById(R.id.price)
         var tvAuthor: TextView = itemView.findViewById(R.id.author)
-        var container: LinearLayout = itemView.findViewById(R.id.container)
+        /*var container: LinearLayout = itemView.findViewById(R.id.container)*/
     }
 }

@@ -30,13 +30,13 @@ import org.json.JSONObject
 class MainActivity : AppCompatActivity() {
     lateinit var button: Button
     lateinit var editText: EditText
-    lateinit var mBooks: ArrayList<Book>
     lateinit var queue: RequestQueue
     lateinit var jsonObject: JSONObject
     lateinit var mRecyclerView: RecyclerView
     lateinit var mAdapter: RecyclerViewAdapter
     lateinit var loading_indicator: ProgressBar
     lateinit var layoutManager: RecyclerView.LayoutManager
+    var mBooks= arrayListOf<Book>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,8 +92,10 @@ class MainActivity : AppCompatActivity() {
             var buy = ""
             var price = "NOT_FOR_SALE"
             try {
-                val items= it.getJSONArray("items")
+                val items = it.getJSONArray("items")
+                print("hiiii" + items)
                 for (i in 0 until items.length()) {
+                    print("data" + items)
                     val item = items.getJSONObject(i)
                     val volumeInfo = item.getJSONObject("volumeInfo")
                     title = volumeInfo.getString("title")
@@ -107,33 +109,37 @@ class MainActivity : AppCompatActivity() {
                     publishedDate = volumeInfo.getString("publishedDate");
                     pageCount = volumeInfo.getInt("pageCount");
                     val saleInfo = item.getJSONObject("saleInfo")
-                    /*val listPrice = saleInfo.getJSONObject("listPrice")
+                    val ebook=saleInfo.getBoolean("isEbook")
+                    if(ebook)
+                    {
+                        val listPrice = saleInfo.getJSONObject("listPrice")
+                        price = listPrice.getString("amount") + " " + listPrice.getString("currencyCode")
+                    }
+                    /*val saleInfo = item.getJSONObject("saleInfo")
+                    val listPrice = saleInfo.getJSONObject("listPrice")
                     price =
-                        listPrice.getString("amount") + " " + listPrice.getString("currencyCode")*/
-                    /*description = volumeInfo.getString("description")
+                        listPrice.getString("amount") + " " + listPrice.getString("currencyCode")
+                    description = volumeInfo.getString("description")
                     buy = saleInfo.getString("buyLink")
-                    categories = volumeInfo.getJSONArray("categories").getString(0)
+                    categories = volumeInfo.getJSONArray("categories").getString(0)*/
                     val thumbnail =
-                        volumeInfo.getJSONObject("imageLinks").getString("thumbnail")
+                        volumeInfo.getJSONObject("imageLinks").getString("smallThumbnail")
                     val previewLink = volumeInfo.getString("previewLink")
-                    val url = volumeInfo.getString("infoLink")*/
+                    val url = volumeInfo.getString("infoLink")
                     mBooks.add(
                         Book(
                             title, author, publishedDate, description, categories
-                            , "j", buy, "j", price, pageCount, "j"
+                            , thumbnail, buy, previewLink, price, pageCount, url
                         )
                     )
+                    mAdapter = RecyclerViewAdapter(this@MainActivity, mBooks)
+                    mRecyclerView.adapter = mAdapter
+                    mRecyclerView.layoutManager = layoutManager
                 }
 
 
-                    mAdapter = RecyclerViewAdapter(this@MainActivity, mBooks)
-                    mRecyclerView.adapter = mAdapter
-                    mRecyclerView.layoutManager=layoutManager
-
-
-
             } catch (e: JSONException) {
-                Toast.makeText(this, "ERROR!!", Toast.LENGTH_SHORT).show()
+                /*Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()*/
             }
         }, Response.ErrorListener {
             Toast.makeText(
@@ -143,12 +149,12 @@ class MainActivity : AppCompatActivity() {
             ).show()
 
         }) {
-            override fun getHeaders(): MutableMap<String, String> {
+            /*override fun getHeaders(): MutableMap<String, String> {
                 val headers = HashMap<String, String>()
                 headers["Content-type"] = "application/json"
                 headers["key"] = "AIzaSyAfvP_Rt2_zdHngSuknQ4ro45rTR_UA9_Y"
                 return headers
-            }
+            }*/
         }
         queue.add(request)
     }

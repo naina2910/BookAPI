@@ -1,6 +1,6 @@
 package com.naina.bookapi.model
 
-class Book(
+data class Book(
     val title: String,
     val authors: String,
     val publishedDate: String,
